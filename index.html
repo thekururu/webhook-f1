@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>F1 a Discord</title>
+</head>
+<body>
+  <h1>F1 → Discord Webhook</h1>
+  <button onclick="enviarF1()">Enviar última carrera</button>
+
+  <script>
+    const WEBHOOK_URL = "AQUI_TU_WEBHOOK";
+
+    async function enviarF1() {
+      try {
+        const res = await fetch("https://f1api.dev/api/current/lastrace");
+        const json = await res.json();
+
+        const race = json.race;
+        const winner = race.results[0];
+
+        const payload = {
+          embeds: [
+            {
+              title: "🏎️ Última carrera de F1",
+              color: 15158332,
+              fields: [
+                { name: "Circuito", value: race.circuit.name, inline: true },
+                { name: "Ganador", value: winner.driver.name, inline: true },
+                { name: "Fecha", value: race.date, inline: false }
+              ]
+            }
+          ]
+        };
+
+        await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        alert("Enviado a Discord ✅");
+      } catch (e) {
+        console.error(e);
+        alert("Error ❌");
+      }
+    }
+  </script>
+</body>
+</html>
