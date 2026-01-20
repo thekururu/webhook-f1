@@ -1,0 +1,59 @@
+name: F1 Sessions to Discord
+
+on:
+  schedule:
+    # FP1 – Viernes
+    - cron: "0 15 * * 5"
+    # FP2 – Viernes
+    - cron: "0 19 * * 5"
+    # FP3 – Sábado
+    - cron: "0 15 * * 6"
+    # Clasificación – Sábado
+    - cron: "0 19 * * 6"
+    # Carrera – Domingo
+    - cron: "0 20 * * 0"
+
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - run: npm install axios
+
+      # FP1
+      - name: FP1
+        run: node sendSession.js
+        env:
+          SESSION: FP1
+
+      # FP2
+      - name: FP2
+        run: node sendSession.js
+        env:
+          SESSION: FP2
+
+      # FP3
+      - name: FP3
+        run: node sendSession.js
+        env:
+          SESSION: FP3
+
+      # QUALY
+      - name: QUALY
+        run: node sendSession.js
+        env:
+          SESSION: QUALY
+
+      # RACE
+      - name: RACE
+        run: node sendSession.js
+        env:
+          SESSION: RACE
